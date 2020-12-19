@@ -75,7 +75,7 @@ class Arrays(object):
                     elif bc == 'Mark':
                         self.A[xx, xx, 0] = 1 / self.delta_x + \
                             np.sqrt(2) * self.sigma_t
-            elif xx < num_nodes - 1:
+            if xx < num_nodes - 1:
                 self.A[xx, xx + 1, 0] = 1 / (2 * self.sigma_t * self.delta_x)
                 if xx == 0:
                     self.A[xx, xx + 1, 0] = 1 / self.delta_x
@@ -113,11 +113,12 @@ class Arrays(object):
 if __name__ == '__main__':
     plt.figure()
     for bc in ['Marshak', 'Mark']:
+        num_nodes = 100
         tic = time.perf_counter()
-        array = Arrays(1, 10)
-        array.A = array.fill_A_T1(10, bc)
-        array.S = array.fill_S_T1(10)
-        print(array.A[1,:,0])
+        array = Arrays(1, num_nodes)
+        array.A = array.fill_A_T1(num_nodes, bc)
+        array.S = array.fill_S_T1(num_nodes)
+        print(array.A[-2,:,0])
         array.phi[:, :, 0] = array.matrix_solver(
             array.A[:, :, 0], array.S[:, :, 0])
         plt.plot(array.x, array.phi[:, :, 0], label=f'{bc} BC')
