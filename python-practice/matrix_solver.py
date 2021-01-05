@@ -107,7 +107,7 @@ class Arrays(object):
         else:
           left_edge = 0
           right_edge = 0
-        return left_edge, right_edge
+        return np.round(left_edge, 4), np.round(right_edge, 4)
 
 
     def fill_S_T1(self, num_nodes):
