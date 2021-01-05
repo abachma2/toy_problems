@@ -16,6 +16,8 @@ def calculate_delta(new_A, old_A):
     old_A: float
         maximum value of flux using previous number of nodes
     '''
+    if old_A == 0:
+        return 'Divide by 0'
     return abs(new_A-old_A)/old_A
 
 if __name__ =='__main__':
