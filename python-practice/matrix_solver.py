@@ -36,7 +36,8 @@ class Arrays(object):
     def matrix_solver(self, A, S):
         '''
         Performs matrix inversion and multiplication to solve the equaition
-        Ax = B, arrays must have the same number of rows
+        Ax = B, by calculating A^(-1)*B. Arrays must have the same number 
+        of rows. 
 
         Parameters:
         ===========
@@ -47,7 +48,7 @@ class Arrays(object):
         '''
         return np.matmul(np.linalg.inv(A), S)
 
-    def fill_A_T1(self, num_nodes, xx, bc='None'):
+    def fill_A_T1(self, num_nodes, bc='None'):
         '''
         Fills A constant matrix to create a tridiagonal matrix for the T1
         approximation
@@ -59,23 +60,22 @@ class Arrays(object):
         num_nodes: int
           number of spatial nodes in the system, this number is looped over
           to fill the matrix as needed to account for boundary conditions
-        xx: int
-          spatial node number
         bc: string
           Name of boundary condition to be applied. Default is no boundary
           conditions are applied. Default value of no boundary condition applied.
           Values accepted to apply boundaries are 'Mark' and 'Marshak'
         '''
-        self.A[xx, xx, 0] = -1 / (self.sigma_t * self.delta_x) + \
-                    (self.sigma_t - self.sigma_s) * self.delta_x
-        if xx > 0:
-            self.A[xx, xx - 1, 0] = 1 / (2 * self.sigma_t * self.delta_x)
-            if xx == num_nodes - 1:
-                self.A[xx, xx - 1, 0] = -1 / self.delta_x
-        if xx < num_nodes - 1:
-            self.A[xx, xx + 1, 0] = 1 / (2 * self.sigma_t * self.delta_x)
-            if xx == 0:
-                self.A[xx, xx + 1, 0] = 1 / self.delta_x
+        for xx in range(num_nodes):
+            self.A[xx, xx, 0] = -1 / (self.sigma_t * self.delta_x) + \
+                        (self.sigma_t - self.sigma_s) * self.delta_x
+            if xx > 0:
+                self.A[xx, xx - 1, 0] = 1 / (2 * self.sigma_t * self.delta_x)
+                if xx == num_nodes - 1:
+                    self.A[xx, xx - 1, 0] = -1 / self.delta_x
+            if xx < num_nodes - 1:
+                self.A[xx, xx + 1, 0] = 1 / (2 * self.sigma_t * self.delta_x)
+                if xx == 0:
+                    self.A[xx, xx + 1, 0] = 1 / self.delta_x
         self.A[0, 0, 0], self.A[num_nodes-1, num_nodes-1, 0] = self.boundary_conditions(bc)
             
         return self.A
@@ -110,7 +110,7 @@ class Arrays(object):
         return left_edge, right_edge
 
 
-    def fill_S_T1(self, num_nodes, xx):
+    def fill_S_T1(self, num_nodes):
         '''
         Fills S constant matrix to create a column matrix for the T1
         approximation
@@ -121,15 +121,14 @@ class Arrays(object):
           Constants array to be filled
         num_nodes: int
           number of spatial nodes in the system
-        xx: int
-          spatial node number
         '''
-        if xx == 0:
-            self.S[xx, 0, 0] = 0
-        elif xx == num_nodes - 1:
-            self.S[xx, 0, 0] = 0
-        else:
-            self.S[xx, 0, 0] = self.q * self.delta_x
+        for xx in range(num_nodes):
+            if xx == 0:
+                self.S[xx, 0, 0] = 0
+            elif xx == num_nodes - 1:
+                self.S[xx, 0, 0] = 0
+            else:
+               self.S[xx, 0, 0] = self.q * self.delta_x
         return self.S
 
 
@@ -139,9 +138,8 @@ if __name__ == '__main__':
         num_nodes = 100
         tic = time.perf_counter()
         array = Arrays(1, num_nodes)
-        for xx in range(num_nodes):
-            array.A = array.fill_A_T1(num_nodes, xx, bc)
-            array.S = array.fill_S_T1(num_nodes, xx)
+        array.A = array.fill_A_T1(num_nodes, bc)
+        array.S = array.fill_S_T1(num_nodes)
         array.phi[:, :, 0] = array.matrix_solver(
             array.A[:, :, 0], array.S[:, :, 0])
         plt.plot(array.x, array.phi[:, :, 0], label=f'{bc} BC')
