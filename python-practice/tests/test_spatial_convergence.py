@@ -15,6 +15,11 @@ def test_calculate_delta2():
     assert exp == obs
 
 def test_calculate_delta3():
-    exp = 'Divide by 0'
+    exp = 'Error occurred'
     obs = calculate_delta(3, 0)
+    assert exp == obs
+
+def test_calculate_delta4():
+    exp = 'Error occurred'
+    obs = calculate_delta('three', 1)
     assert exp == obs
