@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import math 
 import time
 
-from matrix_solver import Arrays
+from arrays import Arrays
 
 def calculate_delta(new_A, old_A):
     '''

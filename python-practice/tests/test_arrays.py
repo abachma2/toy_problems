@@ -1,6 +1,6 @@
 import numpy as np
 
-from matrix_solver import Arrays
+from arrays import Arrays
 
 # Test matrix_solver
 def test_matrix_solver1():
