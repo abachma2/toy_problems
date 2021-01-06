@@ -4,7 +4,7 @@ import math
 
 class Arrays(object):
     '''
-    Contains contants and methods related to the arrays used for solving the 
+    Contains contants and methods related to the arrays used for solving the
     TN approximation of the neutron flux
     '''
 
@@ -34,8 +34,8 @@ class Arrays(object):
     def matrix_solver(self, A, S):
         '''
         Performs matrix inversion and multiplication to solve the equaition
-        Ax = B, by calculating A^(-1)*B. Arrays must have the same number 
-        of rows. 
+        Ax = B, by calculating A^(-1)*B. Arrays must have the same number
+        of rows.
 
         Parameters:
         ===========
@@ -45,13 +45,13 @@ class Arrays(object):
           Array of values not multiplied by the independent variable
         '''
         try:
-            return np.matmul(np.linalg.inv(A), S)
-        except:
+            return np.round(np.matmul(np.linalg.inv(A), S), 4)
+        except BaseException:
             return 'Error in solving matrix equation'
 
     def boundary_conditions(self, bc='None'):
-        ''' 
-        Calculates the values to be used at each corner of the coeffifient 
+        '''
+        Calculates the values to be used at each corner of the coeffifient
         matrix based on the boundary conditions to be applied.
 
         Parameters:
@@ -64,18 +64,18 @@ class Arrays(object):
           Values accepted to apply boundaries are 'Mark' and 'Marshak'
         '''
         if bc == 'Marshak':
-          left_edge = -1 / self.delta_x - \
-                        4 * self.sigma_t / np.pi
-          right_edge = 1 / self.delta_x + \
-                        4 * self.sigma_t / np.pi
+            left_edge = -1 / self.delta_x - \
+                4 * self.sigma_t / np.pi
+            right_edge = 1 / self.delta_x + \
+                4 * self.sigma_t / np.pi
         elif bc == 'Mark':
-          left_edge = -1 / self.delta_x - \
-                        np.sqrt(2) * self.sigma_t
-          right_edge = 1 / self.delta_x + \
-                        np.sqrt(2) * self.sigma_t
+            left_edge = -1 / self.delta_x - \
+                np.sqrt(2) * self.sigma_t
+            right_edge = 1 / self.delta_x + \
+                np.sqrt(2) * self.sigma_t
         else:
-          left_edge = 0
-          right_edge = 0
+            left_edge = 0
+            right_edge = 0
         return np.round(left_edge, 4), np.round(right_edge, 4)
 
     def fill_A_T1(self, num_nodes, bc='None'):
@@ -97,7 +97,7 @@ class Arrays(object):
         '''
         for xx in range(num_nodes):
             self.A[xx, xx, 0] = -1 / (self.sigma_t * self.delta_x) + \
-                        (self.sigma_t - self.sigma_s) * self.delta_x
+                (self.sigma_t - self.sigma_s) * self.delta_x
             if xx > 0:
                 self.A[xx, xx - 1, 0] = 1 / (2 * self.sigma_t * self.delta_x)
                 if xx == num_nodes - 1:
@@ -106,8 +106,9 @@ class Arrays(object):
                 self.A[xx, xx + 1, 0] = 1 / (2 * self.sigma_t * self.delta_x)
                 if xx == 0:
                     self.A[xx, xx + 1, 0] = 1 / self.delta_x
-        self.A[0, 0, 0], self.A[num_nodes-1, num_nodes-1, 0] = self.boundary_conditions(bc)
-            
+        self.A[0, 0, 0], self.A[num_nodes - 1, num_nodes -
+                                1, 0] = self.boundary_conditions(bc)
+
         return self.A
 
     def fill_S_T1(self, num_nodes):
@@ -128,5 +129,5 @@ class Arrays(object):
             elif xx == num_nodes - 1:
                 self.S[xx, 0, 0] = 0
             else:
-               self.S[xx, 0, 0] = self.q * self.delta_x
+                self.S[xx, 0, 0] = self.q * self.delta_x
         return self.S
