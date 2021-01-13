@@ -2,9 +2,19 @@ import numpy as np
 
 from arrays import Arrays
 
+# Test __init__ 
+def test___init__():
+    array = Arrays(1,5)
+    x = np.linspace(-20, 20, 5)
+    phi = np.zeros((5, 1, 1))
+    A = np.zeros((5, 5, 1))
+    S = np.zeros((5, 1, 1))
+    exp = (20, 0.1, 0.05, 1)
+    obs = (array.a, array.sigma_t, array.sigma_s, array.q)
+    assert exp == obs
+
+
 # Test matrix_solver
-
-
 def test_matrix_solver1():
     array = Arrays(1, 5)
     exp = np.array([[1.4286], [-0.7143], [1.4286]])
