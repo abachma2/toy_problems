@@ -1,6 +1,6 @@
 import numpy as np
 import math
-
+from scipy import optimize
 
 class Arrays(object):
     '''
