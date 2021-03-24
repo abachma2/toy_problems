@@ -1,5 +1,7 @@
 name: learning-actions
-on: [push]
+on: 
+    pull_request: 
+        types: [closed]
 jobs: 
     check-python-version:
         runs-on: ubuntu-latest
