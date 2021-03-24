@@ -7,6 +7,6 @@ on:
 jobs: 
     check-python-version:
         runs-on: ubuntu-latest
-        if: githun.event.pull_request.merged == true
+        if: github.event.pull_request.merged == true
         steps:
             - run: python -v
