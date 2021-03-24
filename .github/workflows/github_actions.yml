@@ -1,5 +1,5 @@
 name: learning-actions
-on: [merge]
+on: [push]
 jobs: 
     check-python-version:
         runs-on: ubuntu-latest
