@@ -9,4 +9,5 @@ jobs:
         runs-on: ubuntu-latest
         if: github.event.pull_request.merged == true
         steps:
+            - run: git checkout main
             - run: python -v
