@@ -1,0 +1,7 @@
+name: learning-actions
+on: [merge]
+jobs: 
+    check-python-version:
+        runs-on: ubuntu-latest
+        steps:
+            - run: python -v
