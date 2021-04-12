@@ -6,6 +6,7 @@ int main()
     std::cout << "Enter an integer: ";
     int x{0}; 
 	std::cin >> x;
-    std::cout << "Double that number is: " << x*2 << "\n";
+    std::cout << "Double " << x << " is: "<< x*2 << "\n";
+    std::cout << "Triple " << x << " is: "<< x*3 << "\n";
 	return 0;
 }
