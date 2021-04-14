@@ -11,8 +11,10 @@ int getValue()
 
 int main()
 {
-    int number{getValue()}; 
-    std::cout << "Double " << number << " is: " << number*2 << "\n";
+    int x{getValue()};
+    int y{getValue()}; 
+    std::cout << "Double " << x << " is: " << x*2 << "\n";
+    std::cout << x << " + " << y << " = " << x+y << "\n";
 
 	return 0;
 }
