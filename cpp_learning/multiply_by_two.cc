@@ -9,12 +9,17 @@ int getValue()
     return input;
 }
 
+void printDouble(int value)
+{
+    std::cout << value << " doubled is: " << value*2 << "\n";
+}
+
 int main()
 {
     int x{getValue()};
     int y{getValue()}; 
-    std::cout << "Double " << x << " is: " << x*2 << "\n";
-    std::cout << x << " + " << y << " = " << x+y << "\n";
+    printDouble(x);
+    printDouble(y);
 
 	return 0;
 }
