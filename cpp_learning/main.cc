@@ -1,6 +1,6 @@
 #include <iostream>
 
-int getInteger();
+int getInteger(); // forward declaring the function
 
 int main()
 {
