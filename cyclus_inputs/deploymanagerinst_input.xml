@@ -11,6 +11,8 @@
     <spec> <lib>cycamore</lib><name>GrowthRegion</name> </spec>
     <spec> <lib>cycamore</lib><name>DeployManagerInst</name> </spec>
     <spec> <lib>cycamore</lib><name>ManagerInst</name> </spec>
+    <spec> <lib>cycamore</lib><name>Source</name> </spec>
+    <spec> <lib>cycamore</lib><name>Sink</name> </spec>
   </archetypes>
 
   <commodity>
@@ -56,6 +58,26 @@
     </nuclide>
   </recipe>
   
+
+  <facility>
+  <name>FuelSupply</name>
+  <config>
+    <Source>
+      <outcommod>fresh_uox</outcommod>
+    </Source>
+  </config>
+</facility>
+
+<facility>
+  <name>Repository</name>
+  <config>
+    <Sink>
+      <in_commods>
+        <val>spent_uox</val>
+      </in_commods>
+    </Sink>
+  </config>
+</facility>
 
   <facility>
     <name>Reactor_type1</name>
@@ -104,10 +126,10 @@
           <commod>power</commod>
           <piecewise_function>
             <piece>
-              <start>50</start>
+              <start>0</start>
               <function>
-                <type>linear</type>
-                <params>0 1200</params>
+                <type>exponential</type>
+                <params>1320 0.000833</params>
               </function>
             </piece>
           </piecewise_function>
@@ -118,6 +140,16 @@
     
     <institution>
       <name>FuelCycle</name>
+      <initialfacilitylist>
+        <entry>
+          <prototype>FuelSupply</prototype>
+          <number>1</number>
+        </entry>
+        <entry>
+          <prototype>Repository</prototype>
+          <number>1</number>
+        </entry>
+      </initialfacilitylist>
       <config>
         <ManagerInst>
           <prototypes>
