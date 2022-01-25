@@ -126,10 +126,10 @@
           <commod>power</commod>
           <piecewise_function>
             <piece>
-              <start>0</start>
+              <start>15</start>
               <function>
-                <type>exponential</type>
-                <params>1320 0.000833</params>
+                <type>linear</type>
+                <params>0 1320</params>
               </function>
             </piece>
           </piecewise_function>
