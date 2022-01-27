@@ -9,7 +9,7 @@
   <archetypes>
     <spec> <lib>cycamore</lib><name>Reactor</name> </spec>
     <spec> <lib>cycamore</lib><name>GrowthRegion</name> </spec>
-    <spec> <lib>cycamore</lib><name>DeployManagerInst</name> </spec>
+    <spec> <lib>cycamore</lib><name>DeployInst</name> </spec>
     <spec> <lib>cycamore</lib><name>ManagerInst</name> </spec>
     <spec> <lib>cycamore</lib><name>Source</name> </spec>
     <spec> <lib>cycamore</lib><name>Sink</name> </spec>
@@ -162,7 +162,7 @@
     <institution>
       <name>UNITED_STATES_OF_AMERICA</name>
       <config>
-        <DeployManagerInst>
+        <DeployInst>
           <prototypes>
             <val>Reactor_type1</val>
           </prototypes>
@@ -172,7 +172,7 @@
           <n_build>
             <val>1</val>
           </n_build>
-        </DeployManagerInst>
+        </DeployInst>
       </config>
     </institution>
   </region>
