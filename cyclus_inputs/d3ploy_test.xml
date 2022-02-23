@@ -142,7 +142,7 @@
             <name>source_inst</name>
             </institution>
 
-        <institution>
+        <!--institution>
           <name>LWR Deployment</name>
           <config>
             <DeployInst>
@@ -172,7 +172,7 @@
               </n_build>
             </DeployInst>
           </config>
-        </institution>
+        </institution-->
 
         <name>SingleRegion</name>
   </region>
