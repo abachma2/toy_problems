@@ -1,6 +1,6 @@
 <simulation>
   <control>
-    <duration>100</duration>
+    <duration>1000</duration>
     <startmonth>1</startmonth>
     <startyear>2000</startyear>
   </control>
@@ -59,14 +59,14 @@
   </facility>
   <facility>
     <name>LWR</name>
-    <lifetime>20</lifetime>
+    <lifetime>240</lifetime>
     <config>
       <Reactor>
         <fuel_incommods> <val>fresh_fuel</val> </fuel_incommods>
         <fuel_inrecipes> <val>fresh_fuel_recipe</val> </fuel_inrecipes>
         <fuel_outcommods> <val>spent_fuel</val> </fuel_outcommods>
         <fuel_outrecipes> <val>spent_fuel_recipe</val> </fuel_outrecipes>
-        <cycle_time>5</cycle_time>
+        <cycle_time>18</cycle_time>
         <refuel_time>1</refuel_time>
         <assem_size>100</assem_size>
         <n_assem_core>1</n_assem_core>
@@ -76,15 +76,15 @@
     </config>
   </facility>
   <facility>
-    <name>Advanced Reactor</name>
-    <lifetime>15</lifetime>
+    <name>AdvancedReactor</name>
+    <lifetime>240</lifetime>
     <config>
       <Reactor>
         <fuel_incommods> <val>fresh_fuel</val> </fuel_incommods>
         <fuel_inrecipes> <val>fresh_fuel_recipe</val> </fuel_inrecipes>
         <fuel_outcommods> <val>spent_fuel</val> </fuel_outcommods>
         <fuel_outrecipes> <val>spent_fuel_recipe</val> </fuel_outrecipes>
-        <cycle_time>3</cycle_time>
+        <cycle_time>24</cycle_time>
         <refuel_time>1</refuel_time>
         <assem_size>75</assem_size>
         <n_assem_core>1</n_assem_core>
@@ -123,18 +123,18 @@
                     <calc_method>ma</calc_method>
                     <facility_commod>
                         <item>
-                            <facility>Advanced Reactor</facility>
+                            <facility>AdvancedReactor</facility>
                             <commod>POWER</commod>
                         </item>
                     </facility_commod>
                     <facility_capacity>
                         <item>
-                            <facility>Advanced Reactor</facility>
+                            <facility>AdvancedReactor</facility>
                             <capacity>75</capacity>
                         </item>
                     </facility_capacity>
                     <driving_commod>POWER</driving_commod>
-                    <demand_eq>t</demand_eq>
+                    <demand_eq>np.heaviside(t-500, 0.5)*300</demand_eq>
                     <record>1</record>
                     <steps>1</steps>
                 </DemandDrivenDeploymentInst>
@@ -142,8 +142,8 @@
             <name>source_inst</name>
             </institution>
 
-        <!--institution>
-          <name>LWR Deployment</name>
+        <institution>
+          <name>LWRDeployment</name>
           <config>
             <DeployInst>
               <prototypes>
@@ -156,11 +156,11 @@
               </prototypes>
               <build_times>
                 <val>1</val>
-                <val>10</val>
-                <val>20</val>
-                <val>30</val>
-                <val>35</val>
-                <val>40</val>
+                <val>100</val>
+                <val>200</val>
+                <val>300</val>
+                <val>350</val>
+                <val>400</val>
               </build_times>
               <n_build> 
                 <val>1</val>
@@ -172,7 +172,7 @@
               </n_build>
             </DeployInst>
           </config>
-        </institution-->
+        </institution>
 
         <name>SingleRegion</name>
   </region>
