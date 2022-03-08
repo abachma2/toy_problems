@@ -16,7 +16,8 @@ import collections
 
 # Delete previously generated files
 direc = os.listdir('./')
-hit_list = glob.glob('test_*.sqlite') #+ glob.glob('*.json') + \
+output_file_base = 'noDI_'
+hit_list = glob.glob(output_file_base+'*.sqlite') #+ glob.glob('*.json') + \
     #glob.glob('*.png') + glob.glob('*.csv') + glob.glob('*.txt')
 for file in hit_list:
     os.remove(file)
@@ -26,105 +27,225 @@ ENV['PYTHONPATH'] = ".:" + ENV.get('PYTHONPATH', '')
 
 
 ##### List of types of calc methods that are to be tested #####
-calc_methods = ["ma", "arma", "arch", "poly",
-                "exp_smoothing", "holt_winters", "fft", "sw_seasonal"]
+calc_methods = ["ma", "arma"]#, "arch", "poly",
+                #"exp_smoothing", "holt_winters", "fft", "sw_seasonal"]
 
-scenario_template = {
-    "simulation": {
-        "archetypes": {
-            "spec": [
-                    {"lib": "agents", "name": "NullRegion"},
-                    {"lib": "cycamore", "name": "Source"},
-                    {"lib": "cycamore", "name": "Reactor"},
-                    {"lib": "cycamore", "name": "Sink"},
-                    {"lib": "d3ploy.demand_driven_deployment_inst", "name": "DemandDrivenDeploymentInst"}
-            ]
-        },
-        "control": {"duration": "100", "startmonth": "1", "startyear": "2000"},
-        "recipe": [
-            {
-                "basis": "mass",
-                "name": "fresh_uox",
-                "nuclide": [{"comp": "0.711", "id": "U235"}, {"comp": "99.289", "id": "U238"}]
-            },
-            {
-                "basis": "mass",
-                "name": "spent_uox",
-                "nuclide": [{"comp": "50", "id": "Kr85"}, {"comp": "50", "id": "Cs137"}]
-            }
-        ]}}
+control = """
+<control>
+    <duration>1000</duration>
+    <startmonth>1</startmonth>
+    <startyear>2000</startyear>
+</control>"""
 
+archetypes = """
+<archetypes>
+        <spec>
+            <lib>cycamore</lib>
+            <name>Source</name>
+        </spec>
+        <spec>
+            <lib>cycamore</lib>
+            <name>Reactor</name>
+        </spec>
+        <spec>
+            <lib>cycamore</lib>
+            <name>Sink</name>
+        </spec>
+        <spec>
+            <lib>agents</lib>
+            <name>NullRegion</name>
+        </spec>
+        <spec>
+            <lib>agents</lib>
+            <name>NullInst</name>
+        </spec>
+        <spec>
+            <lib>cycamore</lib>
+            <name>DeployInst</name>
+        </spec>
+        <spec>
+            <lib>d3ploy.demand_driven_deployment_inst</lib>
+            <name>DemandDrivenDeploymentInst</name>
+        </spec>
+    </archetypes>
+"""
 
-scenario_input = {}
-demand_eq = "np.heaviside(t-500,0.5)*300"
+source = """
+<facility>
+    <name>source</name>
+    <config>
+        <Source>
+            <outcommod>fresh_fuel</outcommod>
+            <outrecipe>fresh_fuel_recipe</outrecipe>
+            <throughput>1e6</throughput>
+        </Source>
+    </config>
+</facility>
+"""
+
+LWR = """
+  <facility>
+    <name>LWR</name>
+    <lifetime>240</lifetime>
+    <config>
+      <Reactor>
+        <fuel_incommods> <val>fresh_fuel</val> </fuel_incommods>
+        <fuel_inrecipes> <val>fresh_fuel_recipe</val> </fuel_inrecipes>
+        <fuel_outcommods> <val>spent_fuel</val> </fuel_outcommods>
+        <fuel_outrecipes> <val>spent_fuel_recipe</val> </fuel_outrecipes>
+        <cycle_time>18</cycle_time>
+        <refuel_time>1</refuel_time>
+        <assem_size>100</assem_size>
+        <n_assem_core>1</n_assem_core>
+        <n_assem_batch>1</n_assem_batch>
+        <power_cap>100</power_cap>
+      </Reactor>
+    </config>
+  </facility>
+"""
+
+AR = """
+  <facility>
+    <name>AdvancedReactor</name>
+    <lifetime>240</lifetime>
+    <config>
+      <Reactor>
+        <fuel_incommods> <val>fresh_fuel</val> </fuel_incommods>
+        <fuel_inrecipes> <val>fresh_fuel_recipe</val> </fuel_inrecipes>
+        <fuel_outcommods> <val>spent_fuel</val> </fuel_outcommods>
+        <fuel_outrecipes> <val>spent_fuel_recipe</val> </fuel_outrecipes>
+        <cycle_time>24</cycle_time>
+        <refuel_time>1</refuel_time>
+        <assem_size>75</assem_size>
+        <n_assem_core>1</n_assem_core>
+        <n_assem_batch>1</n_assem_batch>
+        <power_cap>75</power_cap>
+      </Reactor>
+    </config>
+  </facility>
+  """
+
+sink = """
+<facility>
+        <name>sink</name>
+        <config>
+            <Sink>
+                <in_commods>
+                    <val>spent_fuel</val>
+                </in_commods>
+                <max_inv_size>1e6</max_inv_size>
+            </Sink>
+        </config>
+    </facility>
+"""
+
+region = {}
 
 for calc_method in calc_methods:
-    scenario_input[calc_method] = copy.deepcopy(scenario_template)
-    scenario_input[calc_method]["simulation"].update({"facility": [{
-        "config": {"Source": {"outcommod": "fuel",
-                              "outrecipe": "fresh_uox",
-                              "throughput": "3000"}},
-        "name": "source"
-    },
-        {
-        "config": {"Sink": {"in_commods": {"val": "spentfuel"},
-                            "max_inv_size": "1e6"}},
-        "name": "sink"
-    },
-        {
-        "config": {
-            "Reactor": {
-                "assem_size": "1000",
-                "cycle_time": "1",
-                "fuel_incommods": {"val": "fuel"},
-                "fuel_inrecipes": {"val": "fresh_uox"},
-                "fuel_outcommods": {"val": "spentfuel"},
-                "fuel_outrecipes": {"val": "spent_uox"},
-                "n_assem_batch": "1",
-                "n_assem_core": "3",
-                "power_cap": "1000",
-                "refuel_time": "0",
-            }
-        },
-        "name": "reactor"
-    }]})
-    scenario_input[calc_method]["simulation"].update({"region": {
-        "config": {"NullRegion": "\n      "},
-        "institution": {
-            "config": {
-                "DemandDrivenDeploymentInst": {
-                    "calc_method": calc_method,
-                    "facility_commod": {
-                        "item": [
-                            {"commod": "fuel", "facility": "source"},
-                            {"commod": "POWER", "facility": "reactor"}
-                        ]
-                    },
-                    "facility_capacity": {
-                        "item": [
-                            {"capacity": "3000", "facility": "source"},
-                            {"capacity": "1000", "facility": "reactor"}
-                        ]
-                    },
-                    "driving_commod": "POWER",
-                    "demand_eq": demand_eq,
-                    "record": "1",
-                    "steps": "1"
-                }
-            },
-            "name": "source_inst"
-        },
-        "name": "SingleRegion"
-    }})
+    region[calc_method] = """
+   <region>
+        <config>
+            <NullRegion>
+            </NullRegion>
+        </config>
 
-metric_dict = {}
+        <institution>
+          <config>
+            <NullInst/>
+          </config>
+          <initialfacilitylist>
+            <entry>
+              <number>1</number>
+              <prototype>sink</prototype>
+            </entry>  
+            <entry>
+              <number>1</number>
+              <prototype>source</prototype>
+            </entry>             
+          </initialfacilitylist>
+          <name>sink_source_facilities</name>
+        </institution>
+
+        <institution>
+            <config>
+                <DemandDrivenDeploymentInst>
+			<calc_method>%s</calc_method>
+                    <facility_commod>
+                        <item>
+                            <facility>AdvancedReactor</facility>
+                            <commod>POWER</commod>
+                        </item>
+                    </facility_commod>
+                    <facility_capacity>
+                        <item>
+                            <facility>AdvancedReactor</facility>
+                            <capacity>75</capacity>
+                        </item>
+                    </facility_capacity>
+                    <driving_commod>POWER</driving_commod>
+                    <demand_eq>np.heaviside(t-500,0.5)*300</demand_eq>
+                    <record>1</record>
+                    <steps>1</steps>
+                </DemandDrivenDeploymentInst>
+            </config>
+            <name>source_inst</name>
+            </institution>
+
+        <!--institution>
+          <name>LWRDeployment</name>
+          <config>
+            <DeployInst>
+              <prototypes>
+                <val>LWR</val>
+                <val>LWR</val>
+                <val>LWR</val>
+              </prototypes>
+              <build_times>
+                <val>1</val>
+                <val>100</val>
+                <val>200</val>
+              </build_times>
+              <n_build> 
+                <val>1</val>
+                <val>2</val>
+                <val>1</val>
+              </n_build>
+            </DeployInst>
+          </config>
+        </institution-->
+
+        <name>SingleRegion</name>
+  </region>
+    """%(calc_method)
+
+recipe = """
+<recipe>
+   <name>sourceoutrecipe</name>
+   <basis>mass</basis>
+   <nuclide> <id>U235</id> <comp>0.711</comp> </nuclide>
+   <nuclide> <id>U238</id> <comp>99.289</comp> </nuclide>
+</recipe>
+ 
+<recipe>
+   <name>reactoroutrecipe</name>
+   <basis>mass</basis>
+   <nuclide> <id>Kr85</id> <comp>50</comp> </nuclide>
+   <nuclide> <id>Cs137</id> <comp>50</comp> </nuclide>
+</recipe>
+ """
+
 
 for calc_method in calc_methods:
-    name = "test_input_" + calc_method
-    input_file = name + ".json"
-    output_file = name + ".sqlite"
+    input_file = output_file_base + calc_method +'.xml'
+    output_file = output_file_base + calc_method +'.sqlite'
+
     with open(input_file, 'w') as f:
-        json.dump(scenario_input[calc_method], f)
+        f.write('<simulation>\n')
+        f.write(control + archetypes)
+        f.write(source + LWR + AR + sink)
+        f.write(region[calc_method])
+        f.write(recipe)
+        f.write('</simulation>')
 
     s = subprocess.check_output(['cyclus', '-o', output_file, input_file],
-                                universal_newlines=True, env=ENV)
+                            universal_newlines=True, env=ENV)
