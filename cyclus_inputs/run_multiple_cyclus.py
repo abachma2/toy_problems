@@ -27,8 +27,8 @@ ENV['PYTHONPATH'] = ".:" + ENV.get('PYTHONPATH', '')
 
 
 ##### List of types of calc methods that are to be tested #####
-calc_methods = ["ma", "arma"]#, "arch", "poly",
-                #"exp_smoothing", "holt_winters", "fft", "sw_seasonal"]
+calc_methods = ["ma", "arma", "arch", "poly",
+                "exp_smoothing", "holt_winters", "fft", "sw_seasonal"]
 
 control = """
 <control>
@@ -220,14 +220,14 @@ for calc_method in calc_methods:
 
 recipe = """
 <recipe>
-   <name>sourceoutrecipe</name>
+   <name>fresh_fuel_recipe</name>
    <basis>mass</basis>
    <nuclide> <id>U235</id> <comp>0.711</comp> </nuclide>
    <nuclide> <id>U238</id> <comp>99.289</comp> </nuclide>
 </recipe>
  
 <recipe>
-   <name>reactoroutrecipe</name>
+   <name>spent_fuel_recipe</name>
    <basis>mass</basis>
    <nuclide> <id>Kr85</id> <comp>50</comp> </nuclide>
    <nuclide> <id>Cs137</id> <comp>50</comp> </nuclide>
