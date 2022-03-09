@@ -16,9 +16,8 @@ import collections
 
 # Delete previously generated files
 direc = os.listdir('./')
-output_file_base = 'noDI_'
-hit_list = glob.glob(output_file_base+'*.sqlite') #+ glob.glob('*.json') + \
-    #glob.glob('*.png') + glob.glob('*.csv') + glob.glob('*.txt')
+file_base = 'DI_'
+hit_list = glob.glob(file_base+'*.sqlite') + glob.glob(file_base+'*.xml')
 for file in hit_list:
     os.remove(file)
 
@@ -191,7 +190,7 @@ for calc_method in calc_methods:
             <name>source_inst</name>
             </institution>
 
-        <!--institution>
+        <institution>
           <name>LWRDeployment</name>
           <config>
             <DeployInst>
@@ -212,7 +211,7 @@ for calc_method in calc_methods:
               </n_build>
             </DeployInst>
           </config>
-        </institution-->
+        </institution>
 
         <name>SingleRegion</name>
   </region>
@@ -236,8 +235,8 @@ recipe = """
 
 
 for calc_method in calc_methods:
-    input_file = output_file_base + calc_method +'.xml'
-    output_file = output_file_base + calc_method +'.sqlite'
+    input_file = file_base + calc_method +'.xml'
+    output_file = file_base + calc_method +'.sqlite'
 
     with open(input_file, 'w') as f:
         f.write('<simulation>\n')
