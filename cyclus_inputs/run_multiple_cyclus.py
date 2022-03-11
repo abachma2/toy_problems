@@ -16,7 +16,7 @@ import collections
 
 # Delete previously generated files
 direc = os.listdir('./')
-file_base = 'DI_'
+file_base = 'fft_noDI_back'
 hit_list = glob.glob(file_base+'*.sqlite') + glob.glob(file_base+'*.xml')
 for file in hit_list:
     os.remove(file)
@@ -28,6 +28,7 @@ ENV['PYTHONPATH'] = ".:" + ENV.get('PYTHONPATH', '')
 ##### List of types of calc methods that are to be tested #####
 calc_methods = ["ma", "arma", "arch", "poly",
                 "exp_smoothing", "holt_winters", "fft", "sw_seasonal"]
+step_sizes = ["1", "2","5","10", "20"]
 
 control = """
 <control>
@@ -140,8 +141,8 @@ sink = """
 
 region = {}
 
-for calc_method in calc_methods:
-    region[calc_method] = """
+for step_size in step_sizes:
+    region[step_size] = """
    <region>
         <config>
             <NullRegion>
@@ -168,7 +169,7 @@ for calc_method in calc_methods:
         <institution>
             <config>
                 <DemandDrivenDeploymentInst>
-			<calc_method>%s</calc_method>
+			<calc_method>fft</calc_method>
                     <facility_commod>
                         <item>
                             <facility>AdvancedReactor</facility>
@@ -185,12 +186,13 @@ for calc_method in calc_methods:
                     <demand_eq>np.heaviside(t-500,0.5)*300</demand_eq>
                     <record>1</record>
                     <steps>1</steps>
+                    <back_steps>%s</back_steps>
                 </DemandDrivenDeploymentInst>
             </config>
             <name>source_inst</name>
             </institution>
 
-        <institution>
+        <!--institution>
           <name>LWRDeployment</name>
           <config>
             <DeployInst>
@@ -211,11 +213,11 @@ for calc_method in calc_methods:
               </n_build>
             </DeployInst>
           </config>
-        </institution>
+        </institution-->
 
         <name>SingleRegion</name>
   </region>
-    """%(calc_method)
+    """%(step_size)
 
 recipe = """
 <recipe>
@@ -234,15 +236,15 @@ recipe = """
  """
 
 
-for calc_method in calc_methods:
-    input_file = file_base + calc_method +'.xml'
-    output_file = file_base + calc_method +'.sqlite'
+for step_size in step_sizes:
+    input_file = file_base + step_size +'.xml'
+    output_file = file_base + step_size +'.sqlite'
 
     with open(input_file, 'w') as f:
         f.write('<simulation>\n')
         f.write(control + archetypes)
         f.write(source + LWR + AR + sink)
-        f.write(region[calc_method])
+        f.write(region[step_size])
         f.write(recipe)
         f.write('</simulation>')
 
