@@ -1,3 +1,14 @@
+This folder contains different directories for me to practice 
+different computing practices.
+
+oop
+---
+This directory is code for me to practice object-oriented programming 
+(oop).
+
+
+tn_solver
+---------
 This folder contains rebuilt code from my NPRE 555 CP 3, solving for the 
 neutron scalar flux using the TN method. The code is rebuilt to develop my 
 skills using object oriented programming and writing tests. There are two 
@@ -19,5 +30,7 @@ used is specified by the second input to the function on l. 29. The boundary
 condition argumaent has a defualt value. 
 
 Tests
-=====
+-----
+This directory contains test for the functions in each of the directories
+located here.
 
