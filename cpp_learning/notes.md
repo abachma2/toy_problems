@@ -36,3 +36,24 @@ an instance of ``IDENTIFIER`` with ``substitution_text``.
 ## Pre-processor
 * Removes comments, ensures each code file ends in a new line
 * Processes the directives (e.g., ``#include``, ``#define``)
+
+## Function Overloading
+* A way to create multiple functions with the same name -- need different parameter 
+types
+```c++
+int add (int x, int y){
+    return x+y;
+}
+double add (double x, double y){
+    return x+y;
+}
+```
+* Overloaded functions must be differentiable -- type signatures
+    * Different number of input parameters
+    * Types of input parameters
+    * Not the type aliases (typedefs) or ``const``
+    * Not the return type
+* Three ways to solve ambiguous overloads:
+    * Define a new overloaded method to use the data type you want
+    * Explicitly cast arguments to the data type
+    * Use a literal suffix
